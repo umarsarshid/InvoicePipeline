@@ -17,7 +17,6 @@ class Invoice(BaseModel):
 
     class Config:
         schema_extra = {
-            "example": {
                 "id": "12345",
                 "date": "2024-03-12",
                 "customer_id": "cust001",
@@ -30,5 +29,4 @@ class Invoice(BaseModel):
                     }
                 ],
                 "total": 59.98
-            }
         }

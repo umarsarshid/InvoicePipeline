@@ -13,8 +13,8 @@ class Invoice(BaseModel):
     date: str
     customer_id: str
     items: list
-    total: float
-
+    totalPrice: float
+    
 def get_kafka_producer(attempts=5, wait=5):
     for _ in range(attempts):
         try:
