@@ -110,5 +110,3 @@ Contributions to the project are welcome! Please follow the standard fork and pu
 Specify the project license here.
 
 ---
-
-**Note:** Make sure to replace placeholder URLs, paths, and configuration details with the actual ones used in your project. Tailor the README to fit your project's specific requirements and details.

@@ -1,13 +1,15 @@
 version: '3.8'
+networks: 
+  rmoff_kafka:
+    name: rmoff_kafka
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
-    ports:
-      - "2181:2181"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
+    networks: 
+      - rmoff_kafka
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -15,23 +17,23 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "9092:9092"
-    bootstrap-servers: 127.0.0.1:9092
+      - "19092:19092"
+    networks: 
+      - rmoff_kafka
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:19092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
     volumes:
       - kafka_data:/var/lib/kafka/data
+
   kafka-setup:
     image: confluentinc/cp-kafka:latest
     container_name: kafka-setup
+    networks: 
+      - rmoff_kafka
     depends_on:
       - kafka
     command: >
@@ -50,6 +52,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+    networks: 
+      - rmoff_kafka
 
 
   spark:
@@ -60,6 +64,8 @@ services:
       - "8080:8080"
     volumes:
       - ./Users/umararshid/Documents/Projects/Invoice E2E DE/checkpoints:/path/to/checkpoint/dir
+    networks: 
+      - rmoff_kafka
 
   api:
     build: ./api
@@ -67,6 +73,10 @@ services:
       - "8000:8000"
     depends_on:
       - kafka
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+    networks: 
+      - rmoff_kafka
 
   streamlit:
     build: ./streamlit
@@ -74,6 +84,8 @@ services:
       - "8501:8501"
     depends_on:
       - mongodb
+    networks: 
+      - rmoff_kafka
 volumes:
   kafka_data:
   mongodb_data:
