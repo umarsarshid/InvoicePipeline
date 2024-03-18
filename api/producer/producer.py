@@ -38,6 +38,7 @@ async def post_invoice(invoice: Invoice):
     """
     try:
         # Send invoice data to Kafka topic 'invoices'
+        # print(invoice.dict())
         producer.send('invoices', value=invoice.dict())
         producer.flush()  # Ensure data is sent to Kafka
         return {"message": "Invoice data sent to Kafka successfully"}

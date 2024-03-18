@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+kafka-python
+pydantic
+pymongo

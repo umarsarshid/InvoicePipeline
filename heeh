@@ -4,3 +4,29 @@ Status Code: 422
 Response Text: {"detail":[{"type":"missing","loc":["body","totalPrice"],"msg":"Field required","input":{"id":"12345","date":"2024-03-12","customer_id":"cust001","items":[{"item_id":"item001","description":"Wireless Mouse","quantity":2,"price_per_unit":29.99}],"total":59.98},"url":"https://errors.pydantic.dev/2.6/v/missing"}]}
 Status Code: 200
 Response Text: {"message":"Invoice data sent to Kafka successfully"}
+Status Code: 200
+Response Text: {"message":"Invoice data sent to Kafka successfully"}
+Status Code: 200
+Response Text: {"message":"Invoice data sent to Kafka successfully"}
+Status Code: 200
+Response Text: {"message":"Invoice data sent to Kafka successfully"}
+Status Code: 200
+Response Text: {"message":"Invoice data sent to Kafka successfully"}
+Status Code: 200
+Response Text: {"message":"Invoice data sent to Kafka successfully"}
+Status Code: 200
+Response Text: {"message":"Invoice data sent to Kafka successfully"}
+Status Code: 200
+Response Text: {"message":"Invoice data sent to Kafka successfully"}
+Status Code: 200
+Response Text: {"message":"Invoice data sent to Kafka successfully"}
+Status Code: 200
+Response Text: {"message":"Invoice data sent to Kafka successfully"}
+Status Code: 200
+Response Text: {"message":"Invoice data sent to Kafka successfully"}
+Status Code: 200
+Response Text: {"message":"Invoice data sent to Kafka successfully"}
+Status Code: 200
+Response Text: {"message":"Invoice data sent to Kafka successfully"}
+Status Code: 200
+Response Text: {"message":"Invoice data sent to Kafka successfully"}

@@ -14,7 +14,7 @@ def main():
             StructField("quantity", IntegerType()),
             StructField("price_per_unit", FloatType())
         ]))),
-        StructField("total", FloatType())
+        StructField("totaPrice", FloatType())
     ])
 
     # Initialize Spark Session

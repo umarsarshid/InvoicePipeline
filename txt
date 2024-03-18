@@ -1,0 +1,25 @@
+Connected successfully to MongoDB
+Database: ecommerce
+  Collection: invoices
+    Document Count: 1
+    First Document: {'_id': ObjectId('65f8cf6bb2acd5526df98556'), 'id': '12345', 'date': '2024-03-12', 'customer_id': 'cust001', 'items': [{'item_id': 'item001', 'description': 'Wireless Mouse', 'quantity': 2, 'price_per_unit': 29.99}], 'totalPrice': 59.98}
+Connected successfully to MongoDB
+[]
+Empty DataFrame
+Columns: []
+Index: []
+Connected successfully to MongoDB
+[]
+Empty DataFrame
+Columns: []
+Index: []
+Connected successfully to MongoDB
+Connected successfully to MongoDB
+[]
+Empty DataFrame
+Columns: []
+Index: []
+Connected successfully to MongoDB
+[{'_id': '2024-03-12', 'count': 1}]
+          _id  count
+0  2024-03-12      1

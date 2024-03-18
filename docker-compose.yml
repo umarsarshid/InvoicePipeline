@@ -1,8 +1,49 @@
 version: '3.8'
-networks: 
+networks:
   rmoff_kafka:
     name: rmoff_kafka
 services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks: 
+      - rmoff_kafka
+
+  db_initializer:
+    build:
+      context: ./mongodb
+    depends_on:
+      - mongodb
+  producer:
+    build: ./api/producer
+    ports:
+      - "8000:8000"
+    depends_on:
+      - kafka
+      - zookeeper
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+    networks: 
+      - rmoff_kafka
+    
+  consumer:
+    build: ./api/consumer
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+    networks: 
+      - rmoff_kafka
+    depends_on:
+      - kafka
+      - zookeeper
+      - mongodb
+
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
@@ -41,20 +82,6 @@ services:
       cub kafka-ready -b kafka:9092 1 60 &&
       kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 --topic invoices
       "
-       
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    networks: 
-      - rmoff_kafka
-
 
   spark:
     image: bitnami/spark:latest
@@ -64,17 +91,6 @@ services:
       - "8080:8080"
     volumes:
       - ./Users/umararshid/Documents/Projects/Invoice E2E DE/checkpoints:/path/to/checkpoint/dir
-    networks: 
-      - rmoff_kafka
-
-  api:
-    build: ./api
-    ports:
-      - "8000:8000"
-    depends_on:
-      - kafka
-    environment:
-      KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
     networks: 
       - rmoff_kafka
 
