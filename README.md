@@ -24,7 +24,7 @@ The project architecture consists of the following components:
 ### 1. Clone the Repository
 
 ```sh
-git clone https://github.com/yourgithub/repo.git
+git clone https://github.com/umarsarshid/InvoicePipeline.git
 cd repo
 ```
 
@@ -79,6 +79,26 @@ curl -X 'POST' \
 }'
 ```
 
+## Data Model
+
+Provide an overview of the data model, especially the structure of the invoice data expected by the system. For example:
+
+```json
+{
+  "invoice_id": "12345",
+  "date": "2023-01-01",
+  "customer_id": "cust-001",
+  "items": [
+    {
+      "item_id": "item-001",
+      "description": "Item description",
+      "quantity": 2,
+      "price": 9.99
+    }
+  ],
+  "total": 19.98
+}
+
 ### Monitoring Kafka
 
 Use Kafka command-line tools within the Kafka container to monitor topics and messages:
@@ -104,9 +124,3 @@ Refer to the `docker-compose.yml` and individual Dockerfiles for customization o
 ## Contributing
 
 Contributions to the project are welcome! Please follow the standard fork and pull request workflow.
-
-## License
-
-Specify the project license here.
-
----
