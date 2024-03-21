@@ -2,6 +2,9 @@ version: '3.8'
 networks:
   rmoff_kafka:
     name: rmoff_kafka
+  my-network:
+    driver: bridge
+
 services:
   mongodb:
     image: mongo:latest
@@ -15,6 +18,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     networks: 
       - rmoff_kafka
+      - my-network
 
   db_initializer:
     build:
@@ -22,16 +26,19 @@ services:
     depends_on:
       - mongodb
   producer:
+    container_name: producer
     build: ./api/producer
     ports:
       - "8000:8000"
     depends_on:
       - kafka
       - zookeeper
+      - mongodb
     environment:
       KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
     networks: 
       - rmoff_kafka
+      - my-network
     
   consumer:
     build: ./api/consumer
@@ -100,8 +107,10 @@ services:
       - "8501:8501"
     depends_on:
       - mongodb
+      - producer
     networks: 
       - rmoff_kafka
+      - my-network
 volumes:
   kafka_data:
   mongodb_data:

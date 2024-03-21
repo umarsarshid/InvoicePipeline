@@ -2,6 +2,7 @@ import streamlit as st
 from pymongo import MongoClient
 import pandas as pd
 import plotly.express as px
+import requests
 
 # MongoDB connection setup
 client = MongoClient('mongodb://mongodb:27017/', username='root', password='example')
@@ -13,62 +14,41 @@ st.markdown('Explore invoice data from MongoDB.')
 
 # Sidebar filters
 customer_id = st.sidebar.selectbox('Select Customer ID', collection.distinct('customer_id'))
-# Assume 'date' field exists and is of
+# Fetching top-performing products data from FastAPI
+response = requests.get('http://producer:8000/top_performing_products/')
+data = response.json()
 
-# Aggregate invoices by date
-# pipeline = [
-#     {"$group": {"_id": "$date", "count": {"$sum": 1}}},
-#     {"$sort": {"_id": 1}}  # Sort by date ascending
-# ]
+# Convert to DataFrame
+df = pd.DataFrame(data)
+print(df.head())
 
-# invoices_by_date = list(collection.aggregate(pipeline))
-# Fetch data from MongoDB and load it into a DataFrame
-documents = list(collection.find())
-df = pd.DataFrame(documents)
+df['description'] = df['_id'].apply(lambda x: x['description'])
+df.drop('_id', axis=1, inplace=True)
 
-# Assuming your MongoDB documents have 'invoice_date', 'price', 'quantity', 'category', 'payment_method'
-# Convert 'invoice_date' to datetime format and calculate 'total_sales'
-# Convert 'invoice_date' to datetime format
-df['date'] = pd.to_datetime(df['date'], format='%d/%m/%Y')
+# Visualization
+st.title('Top Performing Products and Categories')
 
+# Top Categories Bar Chart
+top_categories = df.groupby('description')['total_sales'].sum().reset_index().sort_values('total_sales', ascending=False)
+fig_categories = px.bar(top_categories, x='description', y='total_sales', title='Top Performing Categories')
+st.plotly_chart(fig_categories)
 
-# App title
-st.title("Sales Over Time Dashboard")
+# Detailed Product Performance within Top Category
+top_category = top_categories.iloc[0]['description']
+top_products_in_category = df[df['description'] == top_category]
+fig_products = px.bar(top_products_in_category, x='description', y='total_sales', title=f'Top Performing Products in {top_category}')
+st.plotly_chart(fig_products)
 
-# Total sales over time (daily, weekly, monthly)
-st.subheader("Total Sales Over Time")
+# Fetch sales trends data
+response2 = requests.get('http://producer:8000/sales_trends/')
+data2 = response2.json()
 
-# Daily Sales
-df_daily = df.resample('D', on='date').totalPrice.sum()
-fig_daily = px.line(df_daily, x=df_daily.index, y='totalPrice', title='Daily Sales')
-st.plotly_chart(fig_daily)
+# Convert to DataFrame
+df2= pd.DataFrame(data2)
+# Combine year, month, day to a single date column for plotting
+df2['date'] = pd.to_datetime(df2['_id'].apply(lambda x: f"{x['year']}-{x['month']}-{x['day']}"))
+df2.sort_values('date', inplace=True)
 
-# Weekly Sales
-df_weekly = df.resample('W', on='date').totalPrice.sum()
-fig_weekly = px.line(df_weekly, x=df_weekly.index, y='totalPrice', title='Weekly Sales')
-st.plotly_chart(fig_weekly)
-
-# Monthly Sales
-df_monthly = df.resample('M', on='date').totalPrice.sum()
-fig_monthly = px.line(df_monthly, x=df_monthly.index, y='totalPrice', title='Monthly Sales')
-st.plotly_chart(fig_monthly)
-
-# Sales by Category Over Time
-st.subheader("Sales by Category Over Time")
-df_category = df.groupby([pd.Grouper(key='date', freq='M'), 'category']).totalPrice.sum().reset_index()
-fig_category = px.line(df_category, x='date', y='totalPrice', color='category', title='Monthly Sales by Category')
-st.plotly_chart(fig_category)
-
-# Sales Trends by Payment Method
-st.subheader("Sales Trends by Payment Method")
-df_payment = df.groupby([pd.Grouper(key='date', freq='M'), 'payment_method']).totalPrice.sum().reset_index()
-fig_payment = px.line(df_payment, x='date', y='totalPrice', color='payment_method', title='Monthly Sales by Payment Method')
-st.plotly_chart(fig_payment)
-
-# Interactive Feature: Select Time Frame
-st.subheader("Interactive: Explore Sales in a Specific Time Frame")
-start_date = st.date_input('Start date', value=pd.to_datetime('2021-01-01'))
-end_date = st.date_input('End date', value=pd.to_datetime('2021-12-31'))
-filtered_df = df[(df['date'] >= start_date) & (df['date'] <= end_date)]
-fig_filtered = px.line(filtered_df.resample('M', on='date').totalPrice.sum(), x=filtered_df.resample('M', on='date').totalPrice.sum().index, y='totalPrice', title=f'Monthly Sales from {start_date} to {end_date}')
-st.plotly_chart(fig_filtered)
+# Plot
+fig2 = px.line(df, x='date', y='daily_sales', title='Daily Sales Trends')
+st.plotly_chart(fig)

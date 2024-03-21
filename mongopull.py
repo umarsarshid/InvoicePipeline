@@ -51,8 +51,6 @@ def func():
     db = client.ecommerce
     collection = db.invoices
     
-    print
-
     pipeline = [
         {"$group": {"_id": "$date", "count": {"$sum": 1}}},
         {"$sort": {"_id": 1}}  # Sort by date ascending
@@ -72,5 +70,5 @@ def func():
 
 
 if __name__ == '__main__':
-    # list_databases_and_collections()
-    func()
+    list_databases_and_collections()
+    # func()

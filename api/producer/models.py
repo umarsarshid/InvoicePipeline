@@ -1,32 +1,40 @@
-# models.py
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List
+from datetime import datetime
 
 class Item(BaseModel):
     item_id: str
     description: str
     quantity: int
-    price_per_unit: float
+    price: float
 
 class Invoice(BaseModel):
     invoice_id: str = Field(..., alias='id')
-    date: str
     customer_id: str
-    items: List[Item]
-    total: Optional[float] = None
+    gender: str
+    age: int
+    items: List[Item] = []  # Assuming multiple items can be under the same invoice
+    payment_method: str
+    date: str
+    totalPrice: float
 
     class Config:
         schema_extra = {
-                "id": "12345",
-                "date": "2024-03-12",
-                "customer_id": "cust001",
+            "example": {
+                "id": "123456",
+                "customer_id": "C12345",
+                "gender": "Male",
+                "age": 30,
                 "items": [
                     {
                         "item_id": "item001",
-                        "description": "Wireless Mouse",
-                        "quantity": 2,
-                        "price_per_unit": 29.99
+                        "description": "Smartphone",
+                        "quantity": 1,
+                        "price": 999.99
                     }
                 ],
-                "total": 59.98
+                "payment_method": "Credit Card",
+                "date": "2024-03-12",
+                "totalPrice": 59.99
+            }
         }
