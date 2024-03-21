@@ -1,7 +1,0 @@
-Connected successfully to MongoDB
-Connected successfully to MongoDB
-Connected successfully to MongoDB
-Database: ecommerce
-  Collection: invoices
-    Document Count: 56463
-    First Document: {'_id': ObjectId('65fbd3679a58a3f832487247'), 'id': 'I138884', 'customer_id': 'C241288', 'gender': 'Female', 'age': 28, 'items': [{'item_id': '2', 'description': 'Clothing', 'quantity': 5, 'price_per_unit': 1500.4}], 'payment_method': 'Credit Card', 'date': '5/8/2022', 'totalPrice': 7502.0}
